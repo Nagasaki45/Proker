@@ -1,0 +1,22 @@
+<h1>Room <%= @key %></h1>
+
+<ul>
+  <%= for player <- @players do %>
+  <li>
+    <%= player.name %> <%= player.vote %>
+  </li>
+  <% end %>
+</ul>
+
+<%= if @request_name do %>
+  <form phx-submit="join">
+    <input name="name" placeholder="Your name" />
+    <input type="submit" value="Join" />
+  </form>
+<% else %>
+  <%= for val <- [1, 2, 3, 5, 912] do %>
+    <button phx-click="vote" phx-value-vote={ val }><%= val %></button>
+  <% end %>
+  <br />
+  <button phx-click="reset_votes">Reset votes</button>
+<% end %>

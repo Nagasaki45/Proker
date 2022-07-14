@@ -1,4 +1,4 @@
-defmodule ProkerWeb.PageControllerTest do
+defmodule ProkerWeb.RoomControllerTest do
   use ProkerWeb.ConnCase
 
   test "GET /", %{conn: conn} do

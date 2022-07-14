@@ -17,7 +17,9 @@ defmodule ProkerWeb.Router do
   scope "/", ProkerWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", RoomController, :index
+    post "/", RoomController, :create
+    live "/:key", RoomLive
   end
 
   # Other scopes may use custom stacks.
