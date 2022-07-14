@@ -3,32 +3,29 @@ defmodule Proker.Room do
 
   # API
 
-  @key_length 4
-
-  def start_link() do
-    key = for _ <- 1..@key_length, into: "", do: <<Enum.random(Enum.concat(?0..?9, ?A..?Z))>>
-    {:ok, _} = GenServer.start_link(__MODULE__, key, name: via_tuple(key))
-    {:ok, key}
+  def start_link(key) do
+    name = Proker.RoomRegistry.via_tuple(key)
+    GenServer.start_link(__MODULE__, key, name: name)
   end
 
-  def get_players(key) do
-    GenServer.call(via_tuple(key), :get_players)
+  def get_players(pid) do
+    GenServer.call(pid, :get_players)
   end
 
-  def join(key, name) do
-    GenServer.cast(via_tuple(key), {:join, self(), name})
+  def join(pid, name) do
+    GenServer.cast(pid, {:join, self(), name})
   end
 
-  def leave(key) do
-    GenServer.cast(via_tuple(key), {:leave, self()})
+  def leave(pid) do
+    GenServer.cast(pid, {:leave, self()})
   end
 
-  def vote(key, value) do
-    GenServer.cast(via_tuple(key), {:vote, self(), value})
+  def vote(pid, value) do
+    GenServer.cast(pid, {:vote, self(), value})
   end
 
-  def reset_votes(key) do
-    GenServer.cast(via_tuple(key), :reset_votes)
+  def reset_votes(pid) do
+    GenServer.cast(pid, :reset_votes)
   end
 
   # Callbacks
@@ -80,10 +77,6 @@ defmodule Proker.Room do
   end
 
   # Internals
-
-  defp via_tuple(key) do
-    Proker.RoomRegistry.via_tuple(key)
-  end
 
   defp create_player(name) do
     %{name: name, vote: nil}

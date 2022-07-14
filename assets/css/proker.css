@@ -1,4 +1,8 @@
-.container {
-  max-width: 80rem;
-  padding: 1em 0;
+body {
+  max-width: 60em;
+  margin: auto;
+}
+
+.flex-end {
+  align-items: flex-end;
 }

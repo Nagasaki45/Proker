@@ -1,5 +1,22 @@
-<%= button "Create room",
-  to: Routes.room_path(@conn, :create),
-  class: "button",
-  method: :post
-%>
+<h1 class="title">Welcome to Proker</h1>
+
+<div class="columns flex-end">
+  <div class="column">
+    <%= button "Create room",
+      to: Routes.room_path(@conn, :create),
+      class: "button is-primary is-large is-fullwidth",
+      method: :post
+    %>
+  </div>
+  <div class="column">
+    <form method="get" onsubmit="document.location.href = '/'+this.key.value; return false;" >
+      <div class="field">
+        <label class="label" for="roomKey">Room key</label>
+        <div class="control">
+          <input class="input" name="key" id="roomKey" type="text" placeholder="ASDF">
+        </div>
+      </div>
+      <button type="submit" class="button is-primary is-large is-fullwidth">Join room</button>
+    </form>
+  </div>
+</div>

@@ -1,22 +1,41 @@
-<h1>Room <%= @key %></h1>
+<%= link "<- Back Home", to: Routes.room_path(@socket, :index), class: "is-primary" %>
+<h1 class="title">Room <%= @key %></h1>
 
-<ul>
-  <%= for player <- @players do %>
-  <li>
-    <%= player.name %> <%= player.vote %>
-  </li>
-  <% end %>
-</ul>
+<div class="columns">
+  <div class="column is-two-thirds">
+    <%= if !@request_name do %>
+      <div class="columns is-mobile">
+        <%= for val <- [1, 2, 3, 5, 8, 13] do %>
+          <div class="column">
+            <button class="button is-large" phx-click="vote" phx-value-vote={ val }><%= val %></button>
+          </div>
+        <% end %>
+      </div>
+      <br />
+    <% end %>
+  </div>
+  <div class="column is-one-third">
+    <table class="table is-fullwidth">
+      <%= for player <- @players do %>
+      <tr class="list-item">
+        <td><%= player.name %></td>
+        <td><%= player.vote %></td>
+      </tr>
+      <% end %>
+    </table>
 
-<%= if @request_name do %>
-  <form phx-submit="join">
-    <input name="name" placeholder="Your name" />
-    <input type="submit" value="Join" />
-  </form>
-<% else %>
-  <%= for val <- [1, 2, 3, 5, 912] do %>
-    <button phx-click="vote" phx-value-vote={ val }><%= val %></button>
-  <% end %>
-  <br />
-  <button phx-click="reset_votes">Reset votes</button>
-<% end %>
+    <%= if @request_name do %>
+      <form phx-submit="join">
+        <div class="field">
+          <label class="label" for="name">Your name</label>
+          <div class="control">
+            <input class="input" name="name" placeholder="John Doe" />
+          </div>
+        </div>
+        <input class="button is-primary" type="submit" value="Join" />
+      </form>
+    <% else %>
+      <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
+    <% end %>
+  </div>
+</div>
