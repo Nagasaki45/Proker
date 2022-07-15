@@ -1,5 +1,14 @@
 <%= link "<- Back Home", to: Routes.room_path(@socket, :index), class: "is-primary" %>
-<h1 class="title">Room <%= @key %></h1>
+<h1 class="title">
+  Room <%= @key %>
+  &nbsp;
+  <button
+    class="button"
+    onClick={
+      "navigator.clipboard.writeText('#{ Routes.live_url(ProkerWeb.Endpoint, ProkerWeb.RoomLive, @key) }')"
+    }
+  >copy room link</button>
+</h1>
 
 <div class="columns">
   <div class="column is-two-thirds">
