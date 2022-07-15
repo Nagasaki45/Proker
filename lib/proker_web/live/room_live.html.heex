@@ -13,7 +13,7 @@
 <div class="columns">
   <div class="column is-two-thirds">
     <%= if !@request_name do %>
-      <div class="columns is-mobile">
+      <div class="columns is-mobile is-multiline">
         <%= for val <- [1, 2, 3, 5, 8, 13] do %>
           <div class="column">
             <button class="button is-large" phx-click="vote" phx-value-vote={ val }><%= val %></button>
