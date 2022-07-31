@@ -4,19 +4,10 @@ defmodule ProkerWeb.RoomLive do
   @impl true
   def mount(%{"key" => key}, _session, socket) do
     key = String.upcase(key)
-
-    case Proker.RoomRegistry.lookup(key) do
-      {:ok, pid} ->
-        Phoenix.PubSub.subscribe(Proker.PubSub, key)
-        do_mount(socket, key, pid)
-
-      {:error, reason} ->
-        raise ProkerWeb.RoomNotFoundError, message: reason
-    end
-  end
-
-  def do_mount(socket, key, pid) do
+    Phoenix.PubSub.subscribe(Proker.PubSub, key)
     Process.flag(:trap_exit, true)
+
+    {:ok, pid} = Proker.RoomRegistry.get_or_create(key)
     {:ok, players} = Proker.Room.get_players(pid)
 
     socket

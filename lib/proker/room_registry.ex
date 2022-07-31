@@ -3,10 +3,10 @@ defmodule Proker.RoomRegistry do
     {:via, Registry, {__MODULE__, key}}
   end
 
-  def lookup(key) do
+  def get_or_create(key) do
     case Registry.lookup(__MODULE__, key) do
       [{pid, nil}] -> {:ok, pid}
-      _ -> {:error, "Room #{key} cannot be found in registry"}
+      _ -> Proker.Room.start_link(key)
     end
   end
 
