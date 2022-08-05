@@ -1,4 +1,4 @@
-<%= link "<- Back Home", to: Routes.room_path(@socket, :index), class: "is-primary" %>
+<%= link "<- Back Home", to: Routes.room_path(@socket, :index) %>
 <h1 class="title">
   Room <%= @key %>
   &nbsp;
@@ -11,10 +11,12 @@
 </h1>
 
 <div class="columns">
+
+  <%# Voting panel %>
   <div class="column is-two-thirds">
     <%= if !@request_name do %>
       <div class="columns is-mobile is-multiline">
-        <%= for val <- [1, 2, 3, 5, 8, 13] do %>
+        <%= for val <- @config.vote_values do %>
           <div class="column">
             <button class="button is-large" phx-click="vote" phx-value-vote={ val }><%= val %></button>
           </div>
@@ -23,28 +25,48 @@
       <br />
     <% end %>
   </div>
-  <div class="column is-one-third">
-    <table class="table is-fullwidth">
-      <%= for player <- @players do %>
-      <tr class="list-item">
-        <td><%= player.name %></td>
-        <td><%= player.vote %></td>
-      </tr>
-      <% end %>
-    </table>
 
-    <%= if @request_name do %>
-      <form phx-submit="join">
+  <div class="column is-one-third">
+    <%# Players panel %>
+    <div class="block">
+      <table class="table is-fullwidth">
+        <%= for player <- @players do %>
+        <tr class="list-item">
+          <td><%= player.name %></td>
+          <td><%= player.vote %></td>
+        </tr>
+        <% end %>
+      </table>
+
+      <%= if @request_name do %>
+        <form phx-submit="join">
+          <div class="field">
+            <label class="label" for="name">Your name</label>
+            <div class="control">
+              <input class="input" name="name" placeholder="John Doe" />
+            </div>
+          </div>
+          <input class="button is-primary" type="submit" value="Join" />
+        </form>
+      <% else %>
+        <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
+      <% end %>
+    </div>
+
+    <%# Config panel %>
+    <div class="block">
+      <h3 class="heading">Room configuration</h3>
+      <form phx-submit="configure">
         <div class="field">
-          <label class="label" for="name">Your name</label>
           <div class="control">
-            <input class="input" name="name" placeholder="John Doe" />
+            <label class="checkbox">
+              <input type="checkbox" name="anonymous_reveal" checked={@config.anonymous_reveal} />
+              Anonymous reveal
+            </label>
           </div>
         </div>
-        <input class="button is-primary" type="submit" value="Join" />
+        <input class="button is-small" type="submit" value="Save config" />
       </form>
-    <% else %>
-      <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
-    <% end %>
+    </div>
   </div>
 </div>

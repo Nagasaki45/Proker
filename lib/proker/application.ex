@@ -13,7 +13,7 @@ defmodule Proker.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Proker.PubSub},
       # Start the room registry
-      {Registry, keys: :unique, name: Proker.RoomRegistry},
+      {Registry, keys: :unique, name: Proker.Room},
       # Start the Endpoint (http/https)
       ProkerWeb.Endpoint
       # Start a worker by calling: Proker.Worker.start_link(arg)

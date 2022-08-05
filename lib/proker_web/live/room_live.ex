@@ -7,13 +7,14 @@ defmodule ProkerWeb.RoomLive do
     Phoenix.PubSub.subscribe(Proker.PubSub, key)
     Process.flag(:trap_exit, true)
 
-    {:ok, pid} = Proker.RoomRegistry.get_or_create(key)
-    {:ok, players} = Proker.Room.get_players(pid)
+    {:ok, pid} = Proker.Room.get_or_create(key)
+    {:ok, {players, config}} = Proker.Room.get_state(pid)
 
     socket
     |> assign(:key, key)
     |> assign(:pid, pid)
     |> assign(:players, players)
+    |> assign(:config, config)
     |> assign(:request_name, true)
     |> tupled(:ok)
   end
@@ -44,6 +45,16 @@ defmodule ProkerWeb.RoomLive do
   end
 
   @impl true
+  def handle_event("configure", params, socket) do
+    config = Proker.RoomConfig.parse_config(params)
+    Proker.Room.configure(socket.assigns.pid, config)
+
+    socket
+    |> assign(:config, config)
+    |> tupled(:noreply)
+  end
+
+  @impl true
   def handle_info({:players, players}, socket) do
     socket
     |> assign(:players, players)
@@ -54,6 +65,13 @@ defmodule ProkerWeb.RoomLive do
   def handle_info({:msg, msg}, socket) do
     socket
     |> put_flash(:info, msg)
+    |> tupled(:noreply)
+  end
+
+  @impl true
+  def handle_info({:config, config}, socket) do
+    socket
+    |> assign(:config, config)
     |> tupled(:noreply)
   end
 
