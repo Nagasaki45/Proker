@@ -8,7 +8,41 @@
       "navigator.clipboard.writeText('#{ Routes.live_url(ProkerWeb.Endpoint, ProkerWeb.RoomLive, @key) }')"
     }
   >copy room link</button>
+  <button class="button" phx-click="config_modal" value="open">edit room configuration</button>
 </h1>
+
+<div class={"modal #{ if @config_modal, do: "is-active"}"}>
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Room configuration</p>
+      <button class="delete" aria-label="close" phx-click="config_modal" value="close"></button>
+    </header>
+    <form phx-submit="configure">
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Anonymous reveal</label>
+          <div class="control">
+            <label class="checkbox">
+              <input type="checkbox" name="anonymous_reveal" checked={@config.anonymous_reveal} />
+              Hide participant names when revealing votes.
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Voting buttons</label>
+          <div class="control">
+            <input class="input" type="text" name="voting_buttons" value={Enum.join(@config.voting_buttons, ", ")}>
+          </div>
+          <p class="help">Comma separated list of possible voting buttons.</p>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <input class="button is-primary" type="submit" value="Save config" />
+      </footer>
+    </form>
+  </div>
+</div>
 
 <div class="columns">
 
@@ -16,7 +50,7 @@
   <div class="column is-two-thirds">
     <%= if !@request_name do %>
       <div class="columns is-mobile is-multiline">
-        <%= for val <- @config.vote_values do %>
+        <%= for val <- @config.voting_buttons do %>
           <div class="column">
             <button class="button is-large" phx-click="vote" phx-value-vote={ val }><%= val %></button>
           </div>
@@ -28,45 +62,27 @@
 
   <div class="column is-one-third">
     <%# Players panel %>
-    <div class="block">
-      <table class="table is-fullwidth">
-        <%= for player <- @players do %>
-        <tr class="list-item">
-          <td><%= player.name %></td>
-          <td><%= player.vote %></td>
-        </tr>
-        <% end %>
-      </table>
-
-      <%= if @request_name do %>
-        <form phx-submit="join">
-          <div class="field">
-            <label class="label" for="name">Your name</label>
-            <div class="control">
-              <input class="input" name="name" placeholder="John Doe" />
-            </div>
-          </div>
-          <input class="button is-primary" type="submit" value="Join" />
-        </form>
-      <% else %>
-        <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
+    <table class="table is-fullwidth">
+      <%= for player <- @players do %>
+      <tr class="list-item">
+        <td><%= player.name %></td>
+        <td><%= player.vote %></td>
+      </tr>
       <% end %>
-    </div>
+    </table>
 
-    <%# Config panel %>
-    <div class="block">
-      <h3 class="heading">Room configuration</h3>
-      <form phx-submit="configure">
+    <%= if @request_name do %>
+      <form phx-submit="join">
         <div class="field">
+          <label class="label" for="name">Your name</label>
           <div class="control">
-            <label class="checkbox">
-              <input type="checkbox" name="anonymous_reveal" checked={@config.anonymous_reveal} />
-              Anonymous reveal
-            </label>
+            <input class="input" name="name" placeholder="John Doe" />
           </div>
         </div>
-        <input class="button is-small" type="submit" value="Save config" />
+        <input class="button is-primary" type="submit" value="Join" />
       </form>
-    </div>
+    <% else %>
+      <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
+    <% end %>
   </div>
 </div>
