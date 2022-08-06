@@ -109,8 +109,8 @@ defmodule Proker.Room do
     %{name: name, vote: nil}
   end
 
-  defp hide_vote(x) when is_number(x), do: "?"
-  defp hide_vote(_), do: nil
+  defp hide_vote(nil), do: nil
+  defp hide_vote(_), do: "?"
 
   defp anonymise(player), do: %{player | name: "Anonymous"}
 
