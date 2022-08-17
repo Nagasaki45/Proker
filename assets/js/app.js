@@ -14,7 +14,8 @@ import "../css/proker.css"
 // import them using relative paths:
 //
 //     import "../vendor/some-package.js"
-//
+import "./proker"
+
 // Alternatively, you can `npm install some-package --prefix assets` and import
 // them using a path starting with the package name:
 //

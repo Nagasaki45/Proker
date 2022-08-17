@@ -8,15 +8,15 @@
       "navigator.clipboard.writeText('#{ Routes.live_url(ProkerWeb.Endpoint, ProkerWeb.RoomLive, @key) }')"
     }
   >copy room link</button>
-  <button class="button" phx-click="config_modal" value="open">edit room configuration</button>
+  <button class="button" onClick="openConfigurationModal()">edit room configuration</button>
 </h1>
 
-<div class={"modal #{ if @config_modal, do: "is-active"}"}>
+<div id="configurationModal" class="modal">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
       <p class="modal-card-title">Room configuration</p>
-      <button class="delete" aria-label="close" phx-click="config_modal" value="close"></button>
+      <button class="delete" aria-label="close" onClick="closeConfigurationModal()"></button>
     </header>
     <form phx-submit="configure">
       <section class="modal-card-body">
@@ -38,7 +38,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <input class="button is-primary" type="submit" value="Save config" />
+        <input class="button is-primary" type="submit" value="Save config" onClick="closeConfigurationModal()" />
       </footer>
     </form>
   </div>

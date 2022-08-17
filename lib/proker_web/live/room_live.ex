@@ -16,7 +16,6 @@ defmodule ProkerWeb.RoomLive do
     |> assign(:players, players)
     |> assign(:config, config)
     |> assign(:request_name, true)
-    |> assign(:config_modal, false)
     |> tupled(:ok)
   end
 
@@ -52,21 +51,6 @@ defmodule ProkerWeb.RoomLive do
 
     socket
     |> assign(:config, config)
-    |> assign(:config_modal, false)
-    |> tupled(:noreply)
-  end
-
-  @impl true
-  def handle_event("config_modal", %{"value" => "open"}, socket) do
-    socket
-    |> assign(:config_modal, true)
-    |> tupled(:noreply)
-  end
-
-  @impl true
-  def handle_event("config_modal", %{"value" => "close"}, socket) do
-    socket
-    |> assign(:config_modal, false)
     |> tupled(:noreply)
   end
 
