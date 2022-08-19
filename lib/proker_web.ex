@@ -47,6 +47,8 @@ defmodule ProkerWeb do
       use Phoenix.LiveView,
         layout: {ProkerWeb.LayoutView, "live.html"}
 
+      alias Phoenix.LiveView.JS
+
       unquote(view_helpers())
     end
   end
