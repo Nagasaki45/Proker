@@ -1,7 +1,9 @@
 defmodule ProkerWeb.RoomLive do
   use ProkerWeb, :live_view
+  import Proker.Utils
+  import ProkerWeb.Components
 
-  @message_lifespan 5000
+  @notification_lifespan 5000
 
   @impl true
   def mount(%{"key" => key}, _session, socket) do
@@ -17,8 +19,8 @@ defmodule ProkerWeb.RoomLive do
     |> assign(:pid, pid)
     |> assign(:players, players)
     |> assign(:config, config)
-    |> assign(:request_name, true)
-    |> assign(:messages, [])
+    |> assign(:user_joined, false)
+    |> assign(:notifications, [])
     |> tupled(:ok)
   end
 
@@ -27,7 +29,7 @@ defmodule ProkerWeb.RoomLive do
     Proker.Room.join(socket.assigns.pid, name)
 
     socket
-    |> assign(:request_name, false)
+    |> assign(:user_joined, true)
     |> tupled(:noreply)
   end
 
@@ -66,17 +68,17 @@ defmodule ProkerWeb.RoomLive do
 
   @impl true
   def handle_info({:msg, msg}, socket) do
-    Process.send_after(self(), :pop_message, @message_lifespan)
+    Process.send_after(self(), :pop_notification, @notification_lifespan)
 
     socket
-    |> assign(:messages, [msg | socket.assigns.messages])
+    |> assign(:notifications, [msg | socket.assigns.notifications])
     |> tupled(:noreply)
   end
 
   @impl true
-  def handle_info(:pop_message, socket) do
+  def handle_info(:pop_notification, socket) do
     socket
-    |> assign(:messages, List.delete_at(socket.assigns.messages, -1))
+    |> assign(:notifications, List.delete_at(socket.assigns.notifications, -1))
     |> tupled(:noreply)
   end
 
@@ -91,6 +93,4 @@ defmodule ProkerWeb.RoomLive do
   def terminate(_reason, socket) do
     Proker.Room.leave(socket.assigns.pid)
   end
-
-  defp tupled(second, first), do: {first, second}
 end

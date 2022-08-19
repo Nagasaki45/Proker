@@ -1,94 +1,17 @@
-<%= link "<- Back Home", to: Routes.room_path(@socket, :index) %>
-<h1 class="title">
-  Room <%= @key %>
-  &nbsp;
-  <button
-    class="button"
-    onClick={
-      "navigator.clipboard.writeText('#{ Routes.live_url(ProkerWeb.Endpoint, ProkerWeb.RoomLive, @key) }')"
-    }
-  >copy room link</button>
-  <button class="button" phx-click={JS.add_class("is-active", to: "#configurationModal")}>edit room configuration</button>
-</h1>
-
-<div id="configurationModal" class="modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Room configuration</p>
-      <button class="delete" aria-label="close" phx-click={JS.remove_class("is-active", to: "#configurationModal")}></button>
-    </header>
-    <form phx-submit="configure">
-      <section class="modal-card-body">
-        <div class="field">
-          <label class="label">Anonymous reveal</label>
-          <div class="control">
-            <label class="checkbox">
-              <input type="checkbox" name="anonymous_reveal" checked={@config.anonymous_reveal} />
-              Hide participant names when revealing votes.
-            </label>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Voting buttons</label>
-          <div class="control">
-            <input class="input" type="text" name="voting_buttons" value={Enum.join(@config.voting_buttons, ", ")}>
-          </div>
-          <p class="help">Comma separated list of possible voting buttons.</p>
-        </div>
-      </section>
-      <footer class="modal-card-foot">
-        <input class="button is-primary" type="submit" value="Save config" phx-click={JS.remove_class("is-active", to: "#configurationModal")} />
-      </footer>
-    </form>
-  </div>
-</div>
+<.header key={@key} home_path={Routes.room_path(@socket, :index)}/>
+<.configuration_modal config={@config} />
+<.notifications notifications={@notifications} />
 
 <div class="columns">
 
-  <%# Voting panel %>
   <div class="column is-two-thirds">
-    <%= if !@request_name do %>
-      <div class="columns is-mobile is-multiline">
-        <%= for val <- @config.voting_buttons do %>
-          <div class="column">
-            <button class="button is-large" phx-click="vote" phx-value-vote={ val }><%= val %></button>
-          </div>
-        <% end %>
-      </div>
-      <br />
+    <%= if @user_joined do %>
+      <.voting config={@config} />
     <% end %>
   </div>
 
   <div class="column is-one-third">
-    <%# Players panel %>
-    <table class="table is-fullwidth">
-      <%= for player <- @players do %>
-      <tr class="list-item">
-        <td><%= player.name %></td>
-        <td><%= player.vote %></td>
-      </tr>
-      <% end %>
-    </table>
-
-    <%= if @request_name do %>
-      <form phx-submit="join">
-        <div class="field">
-          <label class="label" for="name">Your name</label>
-          <div class="control">
-            <input class="input" name="name" placeholder="John Doe" />
-          </div>
-        </div>
-        <input class="button is-primary" type="submit" value="Join" />
-      </form>
-    <% else %>
-      <button class="button is-primary" phx-click="reset_votes">Reset votes</button>
-    <% end %>
+    <.players players={@players} user_joined={@user_joined} />
   </div>
-</div>
 
-<div class="messages">
-  <%= for message <- Enum.reverse(@messages) do %>
-    <div class="notification"><%= message %></div>
-  <% end %>
 </div>

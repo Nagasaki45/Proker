@@ -7,7 +7,7 @@ body {
   align-items: flex-end;
 }
 
-.messages {
+.notifications {
   position: fixed;
   bottom: 2em;
   right: 2em;
@@ -16,7 +16,7 @@ body {
   align-items: flex-end;
 }
 
-.messages .notification {
+.notifications .notification {
   width: fit-content;
   animation-duration: 1s;
   animation-name: slidein;
