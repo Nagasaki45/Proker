@@ -86,3 +86,9 @@
     <% end %>
   </div>
 </div>
+
+<div class="messages">
+  <%= for message <- Enum.reverse(@messages) do %>
+    <div class="notification"><%= message %></div>
+  <% end %>
+</div>

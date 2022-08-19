@@ -1,6 +1,8 @@
 defmodule ProkerWeb.RoomLive do
   use ProkerWeb, :live_view
 
+  @message_lifespan 5000
+
   @impl true
   def mount(%{"key" => key}, _session, socket) do
     key = String.upcase(key)
@@ -16,6 +18,7 @@ defmodule ProkerWeb.RoomLive do
     |> assign(:players, players)
     |> assign(:config, config)
     |> assign(:request_name, true)
+    |> assign(:messages, [])
     |> tupled(:ok)
   end
 
@@ -63,8 +66,17 @@ defmodule ProkerWeb.RoomLive do
 
   @impl true
   def handle_info({:msg, msg}, socket) do
+    Process.send_after(self(), :pop_message, @message_lifespan)
+
     socket
-    |> put_flash(:info, msg)
+    |> assign(:messages, [msg | socket.assigns.messages])
+    |> tupled(:noreply)
+  end
+
+  @impl true
+  def handle_info(:pop_message, socket) do
+    socket
+    |> assign(:messages, List.delete_at(socket.assigns.messages, -1))
     |> tupled(:noreply)
   end
 
