@@ -20,8 +20,16 @@ defmodule ProkerWeb.RoomLive do
     |> assign(:players, players)
     |> assign(:config, config)
     |> assign(:user_joined, false)
+    |> assign(:form_error, nil)
     |> assign(:notifications, [])
     |> tupled(:ok)
+  end
+
+  @impl true
+  def handle_event("join", %{"name" => ""}, socket) do
+    socket
+    |> assign(:form_error, "Come on Eduardo. You need to type something")
+    |> tupled(:noreply)
   end
 
   @impl true
@@ -30,6 +38,7 @@ defmodule ProkerWeb.RoomLive do
 
     socket
     |> assign(:user_joined, true)
+    |> assign(:form_error, nil)
     |> tupled(:noreply)
   end
 

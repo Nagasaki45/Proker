@@ -95,6 +95,9 @@ defmodule ProkerWeb.Components do
           <div class="control">
             <input class="input" name="name" placeholder="John Doe" />
           </div>
+          <%= if @form_error do %>
+            <p class="help is-danger"><%= @form_error %></p>
+          <% end %>
         </div>
         <input class="button is-primary" type="submit" value="Join" />
       </form>
