@@ -18,7 +18,8 @@ defmodule ProkerWeb.Router do
     pipe_through :browser
 
     get "/", RoomController, :index
-    post "/", RoomController, :create
+    post "/create", RoomController, :create
+    post "/join", RoomController, :join
     live "/:key", RoomLive
   end
 

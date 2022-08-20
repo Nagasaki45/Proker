@@ -9,14 +9,17 @@
     %>
   </div>
   <div class="column">
-    <form method="get" onsubmit="document.location.href = '/'+this.key.value; return false;" >
+    <%= form_for @conn, Routes.room_path(@conn, :join), fn f -> %>
       <div class="field">
         <label class="label" for="roomKey">Room key</label>
         <div class="control">
-          <input class="input" name="key" id="roomKey" type="text" placeholder="ASDF">
+          <%= text_input f, :key, id: "roomKey", class: "input", placeholder: "ASDF" %>
         </div>
+        <%= if @form_error do %>
+          <p class="help is-danger"><%= @form_error %></p>
+        <% end %>
       </div>
-      <button type="submit" class="button is-primary is-large is-fullwidth">Join room</button>
-    </form>
+      <%= submit "Join room", class: "button is-primary is-large is-fullwidth" %>
+    <% end %>
   </div>
 </div>
